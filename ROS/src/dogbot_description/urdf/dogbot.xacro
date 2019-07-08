@@ -1,0 +1,391 @@
+<?xml version="1.0"?>
+<robot name="dogbot" xmlns:xacro="http://ros.org/wiki/xacro">
+  
+  <xacro:property name="collisionmesh" value="false" />
+  
+  <xacro:property name="bodyheight" value="0.105" />
+  <xacro:property name="bodywidth" value="0.282" />
+  <xacro:property name="bodylen" value="0.865" />
+  
+  <xacro:property name="hipoffsetside" value="0.088" /><!-- offset from body centreline to hip roll -->
+  <xacro:property name="hipoffset" value="0.2795" /><!-- offset from body midpoint front/back to hip -->
+  <xacro:property name="legoffsetside" value="0.18675" /><!-- from centreline to centre/origin of upper leg -->  
+  <xacro:property name="upperleglen" value="0.315" />
+  <xacro:property name="lowerleglen" value="0.3" />
+  
+  <xacro:property name="kp" value="1000000" />
+  <xacro:property name="kd" value="1.0" />
+  
+  <xacro:property name="d2rad" value="0.017453" /><!-- degrees to radians -->
+
+  <material name="blue">
+    <color rgba="0 0 0.8 1"/>
+  </material>
+
+  <material name="black">
+    <color rgba="0 0 0 1"/>
+  </material>
+
+  <material name="white">
+    <color rgba="1 1 1 1"/>
+  </material>
+
+  <material name="dogbotgray">
+    <color rgba="0.7 0.7 0.7 1"/>
+  </material>
+  
+  <xacro:macro name="default_inertial" params="mass xSize ySize zSize x:=0 y:=0 z:=0 ifactor:=1.0">
+    <inertial>
+      <mass value="${mass}" />
+      <origin xyz="${x} ${y} ${z}" rpy="0 0 0" />
+      <!-- Approximate mass distribution with a box
+      set ifactor=1 for solid box, =2.0 for a thin shell -->
+      <inertia 
+        ixx="${(1.0 / 12.0) * mass * ifactor * (pow(ySize, 2) + pow(zSize, 2))}" 
+        ixy="0.0" 
+        ixz="0.0" 
+        iyy="${(1.0 / 12.0) * mass * ifactor * (pow(xSize, 2) + pow(zSize, 2))}" 
+        iyz="0.0" 
+        izz="${(1.0 / 12.0) * mass * ifactor * (pow(xSize, 2) + pow(ySize, 2))}" 
+      />
+    </inertial>
+  </xacro:macro>
+  
+  <xacro:macro name="custom_inertial" params="mass x:=0 y:=0 z:=0 r:=0 p:=0 yaw:=0 ixx:=0.01 ixy:=0 ixz:=0 iyy:=0.01 iyz:=0 izz:=0.01">
+    <inertial>
+      <mass value="${mass}" />
+      <origin xyz="${x} ${y} ${z}" rpy="${r} ${p} ${yaw}" />
+      <inertia 
+        ixx="${ixx}" ixy="${ixy}" ixz="${ixz}" 
+        iyy="${iyy}" iyz="${iyz}" izz="${izz}" 
+      />
+    </inertial>    
+  </xacro:macro>
+  
+  <xacro:macro name="offset_collisionbox" params="l w:=${bodywidth-bodyheight} h:=${bodyheight} x:=0 y:=0 z:=0">
+    <collision>
+      <origin xyz="${x} ${y} ${z}" rpy="0 0 0" />
+      <geometry>
+        <box size="${w} ${l} ${h}"/>
+      </geometry>
+    </collision>    
+  </xacro:macro>  
+
+  <xacro:macro name="offset_cylinder" params="l rad=${bodyheight/2} x:=0 y:=0 z:=0 r:=0 p:=0 yaw:=0" >
+    <collision>
+      <origin xyz="${x} ${y} ${z}" rpy="${r} ${p} ${yaw}" />
+      <geometry>
+        <cylinder radius="${rad}" length="${l}"/>
+      </geometry>
+    </collision>
+  </xacro:macro>
+
+  <xacro:macro name="offset_cylinderpair" params="l rad=${bodyheight/2} x:=${(bodywidth/2)-(bodyheight/2)} y:=0">
+    <xacro:offset_cylinder l="${l}" rad="${rad}" x="${x}" y="${y}" r="${pi/2}" />
+    <xacro:offset_cylinder l="${l}" rad="${rad}" x="${-x}" y="${y}" r="${pi/2}" />
+  </xacro:macro>
+    
+  <!-- start the robot links -->
+  <link name="base_link">
+  </link>
+
+  <link name="body">
+    <visual>
+      <geometry>
+        <mesh scale="0.001 0.001 0.001" filename="package://dogbot_description/meshes/body.stl"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    
+    <xacro:if value="${collisionmesh}">
+    <collision>
+      <geometry>
+        <mesh scale="0.001 0.001 0.001" filename="package://dogbot_description/meshes/body.stl"/>
+      </geometry>
+    </collision>
+    </xacro:if>
+    <xacro:unless value="${collisionmesh}">
+      <!-- central body -->
+      <xacro:offset_collisionbox l="0.433" />
+      <xacro:offset_cylinderpair l="0.433" />
+      <!-- handles -->
+      <xacro:offset_collisionbox l="0.132" w="0.035" y="0.2825"/>
+      <xacro:offset_collisionbox l="0.132" w="0.035" y="-0.2825"/>
+      <!-- ends -->
+      <xacro:offset_collisionbox l="0.080" y="0.3975"/>
+      <xacro:offset_cylinderpair l="0.080" y="0.3975" />
+      <xacro:offset_collisionbox l="0.080" y="-0.3975"/>
+      <xacro:offset_cylinderpair l="0.080" y="-0.3975" />
+    </xacro:unless>
+        
+    <xacro:default_inertial mass="9.836" xSize="${bodywidth}" ySize="${bodylen}" zSize="${bodyheight}" ifactor="1.5" />
+        
+  </link>
+
+  <joint name="base_joint" type="fixed">
+    <axis xyz="0 0 0" rpy="0 0 0" />
+    <parent link="base_link"/>
+    <child link="body"/>
+  </joint>
+
+  <gazebo reference="body">
+    <mu1 value="200.0"/>
+    <mu2 value="100.0"/>
+    <kp value="${kp}" />
+    <kd value="${kd}" />
+    <material>Gazebo/white</material>
+  </gazebo>
+  
+  <!-- reflectx indicates left/right, reflecty indicates front/back (front-right is 1,1, i.e.
+  y co-ordinate increases towards the front of the robot, and x to the right, with the origin in the 
+  body centre) -->
+  <xacro:macro name="leg" params="prefix suffix reflectx reflecty">
+    
+    <link name="${prefix}_${suffix}_hip">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 ${(reflectx-1) * 0.5 * pi} 0" />
+        <geometry>
+          <mesh scale="0.001 0.001 0.001" filename="package://dogbot_description/meshes/hip.stl"/>
+        </geometry>
+        <material name="white"/>
+      </visual>
+      
+      <xacro:if value="${collisionmesh}">
+      <collision>
+        <origin xyz="0 0 0" rpy="0 ${(reflectx-1) * 0.5 * pi} 0" />
+        <geometry>
+          <mesh scale="0.001 0.001 0.001" filename="package://dogbot_description/meshes/hip.stl"/>
+        </geometry>
+      </collision>
+      </xacro:if>
+      <xacro:unless value="${collisionmesh}">      
+        <xacro:offset_cylinder l="0.08" p="${pi/2}" x="${0.02 * reflectx}"/>
+      </xacro:unless>
+      <xacro:default_inertial mass="0.852" xSize="${bodyheight}" ySize="0.08" zSize="${bodyheight}" z="0.007" ifactor="1.2"/>
+    </link>    
+    
+    <!-- roll joint connects the hip to the body -->
+    <joint name="${prefix}_${suffix}_roll_joint" type="revolute">
+      <axis xyz="0 ${reflecty} 0" rpy="0 0 0" />
+      <parent link="body"/>
+      <child link="${prefix}_${suffix}_hip"/>
+      <origin xyz="${hipoffsetside*reflectx} ${hipoffset * reflecty} 0" rpy="0 0 0"/><!-- "0 0 ${-pi*(1-reflecty)/2}"/> -->
+      <limit 
+         lower ="${-100 * d2rad}" 
+         upper ="${100 * d2rad}" 
+         effort="500" velocity="6.0" />
+    </joint>
+
+    <link name="${prefix}_${suffix}_upperleg">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 ${ (reflectx -1) * 0.5 * pi}" />
+        <geometry>
+          <mesh scale="0.001 0.001 0.001" filename="package://dogbot_description/meshes/leg_upper.stl"/>
+        </geometry>
+        <material name="white"/>
+      </visual>
+
+      <xacro:if value="${collisionmesh}">
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 ${ (reflectx -1) * 0.5 * pi}" />
+        <geometry>
+          <mesh scale="0.001 0.001 0.001" filename="package://dogbot_description/meshes/leg_upper.stl"/>
+        </geometry>
+      </collision>
+      </xacro:if>
+      <xacro:unless value="${collisionmesh}">    
+        <!-- upper motor housings -->
+        <xacro:offset_cylinder l="0.13" p="${pi/2}" x="${0.03 * reflectx}"/>
+        <!-- main leg cylinder and belt -->
+        <xacro:offset_cylinder l="0.27" rad="0.033" z="-0.135"/>
+        <xacro:offset_collisionbox l="0.084" w="0.025" h="0.27" z="-0.135"/>
+        <!-- circuit board housing -->
+        <xacro:offset_collisionbox l="0.074" w="0.026" h="0.138" x="${0.046 * reflectx}" z="-0.126"/>
+        <!-- knee-joint components -->
+        <xacro:offset_cylinder l="0.018" rad="0.017" z="${-upperleglen}" p="${pi/2}" x="${0.03 * reflectx}" />
+        <xacro:offset_cylinder l="0.013" rad="0.017" z="${-upperleglen}" p="${pi/2}" x="${-0.036 * reflectx}" />
+      </xacro:unless>      
+      
+      <xacro:default_inertial mass="2.791" xSize="0.08" ySize="0.03" zSize="0.38" ifactor="1.3" x="0.0129" z="-0.0785" />
+    </link>    
+    
+    <!-- pitch joint connects hip to upper leg -->
+    <joint name="${prefix}_${suffix}_pitch_joint" type="revolute">
+      <axis xyz="${reflectx} 0 0" rpy="0 0 0" />
+      <parent link="${prefix}_${suffix}_hip"/>
+      <child link="${prefix}_${suffix}_upperleg"/>
+      <origin xyz="${(legoffsetside - hipoffsetside)*reflectx} 0 0" rpy="0 0 0"/>
+      <limit 
+        lower ="-${pi*2}" 
+        upper="${pi*2}" 
+        effort="1000" 
+        velocity="6.0" 
+      />
+    </joint>
+
+    <link name="${prefix}_${suffix}_lowerleg">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh scale="0.001 0.001 0.001" filename="package://dogbot_description/meshes/leg_lower_CF.stl"/>
+        </geometry>
+        <material name="white"/>
+      </visual>      
+
+      <xacro:if value="${collisionmesh}">
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh scale="0.001 0.001 0.001" filename="package://dogbot_description/meshes/leg_lower_CF.stl"/>
+        </geometry>
+      </collision>   
+      </xacro:if>
+      <xacro:unless value="${collisionmesh}">
+        <!-- knee assembly -->
+        <xacro:offset_cylinder l="0.033" rad="0.042" p="${pi/2}" />
+        <xacro:offset_collisionbox l="0.017" w="0.02" h="0.065" x="0.024" y="-0.0375" z="-0.0055" />
+        <xacro:offset_collisionbox l="0.017" w="0.02" h="0.065" x="-0.024" y="-0.0375" z="-0.0055" />
+        <!-- carbon fibre struts -->
+        <xacro:offset_cylinder l="0.290" rad="0.006" p="0.04996" x="0.01575" y="-0.0375" z="-0.145" />
+        <xacro:offset_cylinder l="0.290" rad="0.006" p="-0.04996" x="-0.01575" y="-0.0375" z="-0.145" />
+      </xacro:unless>
+
+      <xacro:default_inertial mass="0.45" xSize="0.03" ySize="0.02" zSize="0.36" y="-0.02" z="-0.03" ifactor="1.7" />
+    </link>    
+
+    <gazebo reference="${prefix}_${suffix}_lowerleg">
+      <mu1 value="2000.0"/>
+      <mu2 value="1000.0"/>
+      <kp value="${kp}" />
+      <kd value="${kd}" />
+      <selfCollide value="true" />
+      <material>Gazebo/Grey</material>
+    </gazebo>
+    
+    <joint name="${prefix}_${suffix}_knee_joint" type="revolute">
+      <axis xyz="${reflectx} 0 0" rpy="${-2*pi} 0 0" />
+      <parent link="${prefix}_${suffix}_upperleg"/>
+      <child link="${prefix}_${suffix}_lowerleg"/>
+      <origin xyz="0 0 ${-upperleglen}" rpy="0 0 0"/>
+      <limit 
+         lower ="${-0.01*(reflectx+1) + 150 * d2rad * (reflectx-1)/2}" 
+         upper ="${-0.01*(reflectx-1) + 150 * d2rad * (reflectx+1)/2}" 
+         effort="1000" velocity="6.0" 
+       />
+    </joint>
+
+    <link name="${prefix}_${suffix}_foot">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh scale="0.001 0.001 0.001" filename="package://dogbot_description/meshes/leg_lower_FOOT.stl"/>
+        </geometry>
+      </visual> 
+      
+      <xacro:if value="${collisionmesh}">
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh scale="0.001 0.001 0.001" filename="package://dogbot_description/meshes/leg_lower_FOOT.stl"/>
+        </geometry>
+      </collision>
+      </xacro:if>
+      <xacro:unless value="${collisionmesh}">   
+        <collision>
+          <origin xyz="0 -0.035 ${-lowerleglen}" rpy="0 0 0" />
+          <geometry>
+            <sphere radius="0.028" />
+          </geometry>
+        </collision>
+      </xacro:unless>
+      
+      <xacro:default_inertial mass="0.2" xSize="0.05" ySize="0.05" zSize="0.05" y="-0.035" z="${-lowerleglen}"/>
+    </link> 
+
+    <joint name="${prefix}_${suffix}_foot_joint" type="fixed">
+      <axis xyz="0 1 0" rpy="0 0 0" />
+      <parent link="${prefix}_${suffix}_lowerleg"/>
+      <child link="${prefix}_${suffix}_foot"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint> 
+
+    <gazebo reference="${prefix}_${suffix}_foot">
+      <mu1 value="2000.0"/>
+      <mu2 value="1000.0"/>
+      <kp value="${kp}" />
+      <kd value="${kd}" />
+      <material>Gazebo/Red</material>
+    </gazebo>
+
+    <transmission name="${prefix}_${suffix}_roll_transmition" >
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${prefix}_${suffix}_roll_joint">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="${prefix}_${suffix}_roll_motor" >
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+
+    <transmission name="${prefix}_${suffix}_pitch_transmition" >
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${prefix}_${suffix}_pitch_joint">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="${prefix}_${suffix}_pitch_motor" >
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+
+    <transmission name="${prefix}_${suffix}_knee_transmition" >
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${prefix}_${suffix}_knee_joint">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="${prefix}_${suffix}_knee_motor" >
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+    
+  </xacro:macro>
+
+  <xacro:leg prefix="back" suffix="left" reflectx="-1"  reflecty="-1"/>
+  <xacro:leg prefix="back" suffix="right"  reflectx="1" reflecty="-1" />
+  <xacro:leg prefix="front"  suffix="left" reflectx="-1"  reflecty="1"/>
+  <xacro:leg prefix="front"  suffix="right"  reflectx="1" reflecty="1" />
+
+  <gazebo>
+    <plugin name="imu_plugin" filename="libhector_gazebo_ros_imu.so">
+      <alwaysOn>true</alwaysOn>
+      <bodyName>body</bodyName>
+      <robotNamespace>dogbot</robotNamespace>
+      <topicName>imu</topicName>
+      <serviceName>imu_service</serviceName>
+      <gaussianNoise>0.0</gaussianNoise>
+      <updateRate>20.0</updateRate>
+    </plugin>
+    
+    <plugin name="gps_plugin" filename="libhector_gazebo_ros_gps.so">
+      <alwaysOn>true</alwaysOn>
+      <bodyName>body</bodyName>
+      <robotNamespace>dogbot</robotNamespace>
+      <topicName>gps</topicName>
+      <serviceName>imu_service</serviceName>
+      <updateRate>100</updateRate>
+      <referenceLatitude>51.5</referenceLatitude>
+      <referenceLongitude>0.1278</referenceLongitude>
+    </plugin>
+  </gazebo>
+  
+  <!-- Gazebo plugin for ROS Control -->
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/dogbot</robotNamespace>  
+    </plugin>
+  </gazebo>
+
+
+</robot>
