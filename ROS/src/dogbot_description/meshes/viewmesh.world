@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- Helpful viewer, run directly as "gazebo viewmesh.world" to inspect one of the meshes -->
+<!-- Helpful viewer, edit mesh location below and run directly as "gazebo viewmesh.world" to inspect one of the meshes -->
 <sdf version="1.6">
   <world name="default">
     <include>
