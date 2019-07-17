@@ -2,23 +2,33 @@
 
 DogBot comes integrated with ROS for ease of integration with your own systems.  Refer to the main repo instructions for initial setup.
 
-Currently only the [URDF] and a simple Gazebo world are available for Dogbot v4
+Currently only the [URDF] and a simple Gazebo world are available for Dogbot v4.
 
-# Operation
+# ROS/Gazebo operation
 
-There is a standard [Catkin] workspace in the ROS folder, which should be built with `catkin build` strating in this folder (/ROS):
+There is a standard [Catkin] workspace in the ROS folder, which should be built with `catkin build` starting in this folder (/ROS):
 
 ```bat
 catkin build
 source devel/setup.bash
 ```
 
-## View Gazebo Sim
+## View Gazebo Simulation
 
 To view the DogBot sim in an empty Gazebo world, starting with physics paused:
 ```bat
 roslaunch dogbot_gazebo gztest.launch paused:=true
 ```
+![Gazebo DogBot screenshot](Library/dogbot.gazebo.png "DogBot model in empty Gazebo sim world")
+
+## View in RViz
+
+To view the DogBot sim in RViz:
+
+```bat
+roslaunch dogbot_control dogbot_display.launch
+```
+![RViz DogBot screenshot](Library/dogbot.rviz.png "DogBot model in ROS RViz")
 
 ## Operation and Controllers
 
@@ -47,6 +57,13 @@ effort: [-1.9987473232990993, -3.9632086186793813, 0.2159600645524229, 1.7079086
 Show just back_left_pitch_joint position: `rostopic echo -n 1 /dogbot/joint_states/position[2]`
 
 Set a joint position: `rostopic pub /dogbot/back_left_knee_position_controller/command std_msgs/Float64 "data: -1.0" -1`
+
+# URDF Standalone
+
+The urdf and meshes to use outside of a ROS/Gazebo environment are under [dogbot_description](src/dogbot_description).  Note that the [dogbot.urdf](src/dogbot_description/dogbot.urdf) file defines the location of the meshes via their ROS package locations.
+
+URDF rendered in a DART simulation:
+![DART DogBot screenshot](Library/dogbot.dart.png "DogBot model in DART simulation")
 
 ## Export URDF/SDF from Xacro
 

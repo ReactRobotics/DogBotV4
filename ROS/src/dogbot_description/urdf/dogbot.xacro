@@ -1,5 +1,9 @@
 <?xml version="1.0"?>
 <robot name="dogbot" xmlns:xacro="http://ros.org/wiki/xacro">
+<!-- =================================================================================== -->
+<!-- |    Details of mass and inertia in this file are estimates only                  | -->
+<!-- |    as DogBot design is still undergoing refinements                             | -->
+<!-- =================================================================================== -->
   
   <xacro:property name="collisionmesh" value="false" />
   
@@ -15,8 +19,8 @@
   
   <xacro:property name="kp" value="1000000" />
   <xacro:property name="kd" value="1.0" />
-  
-  <xacro:property name="d2rad" value="0.017453" /><!-- degrees to radians -->
+  <!-- degrees to radians -->
+  <xacro:property name="d2rad" value="0.017453" />
 
   <material name="blue">
     <color rgba="0 0 0.8 1"/>
@@ -30,16 +34,20 @@
     <color rgba="1 1 1 1"/>
   </material>
 
+  <material name="dogbotred">
+    <color rgba="1 0 0 1"/>
+  </material>
+
   <material name="dogbotgray">
     <color rgba="0.7 0.7 0.7 1"/>
   </material>
   
+  <!-- Approximate mass distribution with a box
+  set ifactor=1 for solid box, =2.0 for a thin shell -->
   <xacro:macro name="default_inertial" params="mass xSize ySize zSize x:=0 y:=0 z:=0 ifactor:=1.0">
     <inertial>
       <mass value="${mass}" />
       <origin xyz="${x} ${y} ${z}" rpy="0 0 0" />
-      <!-- Approximate mass distribution with a box
-      set ifactor=1 for solid box, =2.0 for a thin shell -->
       <inertia 
         ixx="${(1.0 / 12.0) * mass * ifactor * (pow(ySize, 2) + pow(zSize, 2))}" 
         ixy="0.0" 
@@ -50,6 +58,11 @@
       />
     </inertial>
   </xacro:macro>
+  
+  <!-- useful for visual-only links; need some inertia on all elements -->
+  <xacro:macro name="tinymass" >
+    <xacro:default_inertial mass="0.001" xSize="0.001" ySize="0.001" zSize="0.001" />
+  </xacro:macro>  
   
   <xacro:macro name="custom_inertial" params="mass x:=0 y:=0 z:=0 r:=0 p:=0 yaw:=0 ixx:=0.01 ixy:=0 ixz:=0 iyy:=0.01 iyz:=0 izz:=0.01">
     <inertial>
@@ -91,16 +104,16 @@
 
   <link name="body">
     <visual>
+      <origin xyz="0 0 0" rpy="${-0.5 * pi} 0 0" />
       <geometry>
-        <mesh scale="0.001 0.001 0.001" filename="package://dogbot_description/meshes/body.stl"/>
+        <mesh scale="1.0 1.0 1.0" filename="package://dogbot_description/meshes/body.dae"/>
       </geometry>
-      <material name="white"/>
     </visual>
     
     <xacro:if value="${collisionmesh}">
     <collision>
       <geometry>
-        <mesh scale="0.001 0.001 0.001" filename="package://dogbot_description/meshes/body.stl"/>
+        <mesh scale="1.0 1.0 1.0" filename="package://dogbot_description/meshes/body.dae"/>
       </geometry>
     </collision>
     </xacro:if>
@@ -127,13 +140,27 @@
     <parent link="base_link"/>
     <child link="body"/>
   </joint>
-
+  
+  <link name="bodytext">
+    <visual>
+      <origin xyz="0 0 0" rpy="${-0.5 * pi} 0 0" />
+      <geometry>
+        <mesh scale="1.0 1.0 1.0" filename="package://dogbot_description/meshes/bodyTEXT.dae"/>
+      </geometry>
+    </visual>        
+    <xacro:tinymass />
+  </link>  
+  
+  <joint name="bodytext_joint" type="fixed">
+    <parent link="body"/>
+    <child link="bodytext"/>
+  </joint>
+  
   <gazebo reference="body">
     <mu1 value="200.0"/>
     <mu2 value="100.0"/>
     <kp value="${kp}" />
     <kd value="${kd}" />
-    <material>Gazebo/white</material>
   </gazebo>
   
   <!-- reflectx indicates left/right, reflecty indicates front/back (front-right is 1,1, i.e.
@@ -143,18 +170,17 @@
     
     <link name="${prefix}_${suffix}_hip">
       <visual>
-        <origin xyz="0 0 0" rpy="0 ${(reflectx-1) * 0.5 * pi} 0" />
+        <origin xyz="0 0 0" rpy="${-0.5 * pi} ${(reflectx-1) * 0.5 * pi} 0" />
         <geometry>
-          <mesh scale="0.001 0.001 0.001" filename="package://dogbot_description/meshes/hip.stl"/>
+          <mesh scale="1.0 1.0 1.0" filename="package://dogbot_description/meshes/hip.dae"/>
         </geometry>
-        <material name="white"/>
       </visual>
       
       <xacro:if value="${collisionmesh}">
       <collision>
-        <origin xyz="0 0 0" rpy="0 ${(reflectx-1) * 0.5 * pi} 0" />
+        <origin xyz="0 0 0" rpy="${-0.5 * pi} ${(reflectx-1) * 0.5 * pi} 0" />
         <geometry>
-          <mesh scale="0.001 0.001 0.001" filename="package://dogbot_description/meshes/hip.stl"/>
+          <mesh scale="1.0 1.0 1.0" filename="package://dogbot_description/meshes/hip.dae"/>
         </geometry>
       </collision>
       </xacro:if>
@@ -163,33 +189,32 @@
       </xacro:unless>
       <xacro:default_inertial mass="0.852" xSize="${bodyheight}" ySize="0.08" zSize="${bodyheight}" z="0.007" ifactor="1.2"/>
     </link>    
-    
+
     <!-- roll joint connects the hip to the body -->
     <joint name="${prefix}_${suffix}_roll_joint" type="revolute">
       <axis xyz="0 ${reflecty} 0" rpy="0 0 0" />
       <parent link="body"/>
       <child link="${prefix}_${suffix}_hip"/>
-      <origin xyz="${hipoffsetside*reflectx} ${hipoffset * reflecty} 0" rpy="0 0 0"/><!-- "0 0 ${-pi*(1-reflecty)/2}"/> -->
+      <origin xyz="${hipoffsetside*reflectx} ${hipoffset * reflecty} 0" rpy="0 0 0"/>
       <limit 
          lower ="${-100 * d2rad}" 
          upper ="${100 * d2rad}" 
          effort="500" velocity="6.0" />
     </joint>
-
+  
     <link name="${prefix}_${suffix}_upperleg">
       <visual>
-        <origin xyz="0 0 0" rpy="0 0 ${ (reflectx -1) * 0.5 * pi}" />
+        <origin xyz="0 0 0" rpy="${-0.5 * pi} 0 ${ (reflectx -1) * 0.5 * pi}" />
         <geometry>
-          <mesh scale="0.001 0.001 0.001" filename="package://dogbot_description/meshes/leg_upper.stl"/>
+          <mesh scale="1.0 1.0 1.0" filename="package://dogbot_description/meshes/LegUpper_withCover.dae"/>
         </geometry>
-        <material name="white"/>
       </visual>
 
       <xacro:if value="${collisionmesh}">
       <collision>
-        <origin xyz="0 0 0" rpy="0 0 ${ (reflectx -1) * 0.5 * pi}" />
+        <origin xyz="0 0 0" rpy="${-0.5 * pi} 0 ${ (reflectx -1) * 0.5 * pi}" />
         <geometry>
-          <mesh scale="0.001 0.001 0.001" filename="package://dogbot_description/meshes/leg_upper.stl"/>
+          <mesh scale="1.0 1.0 1.0" filename="package://dogbot_description/meshes/LegUpper_withCover.dae"/>
         </geometry>
       </collision>
       </xacro:if>
@@ -216,8 +241,8 @@
       <child link="${prefix}_${suffix}_upperleg"/>
       <origin xyz="${(legoffsetside - hipoffsetside)*reflectx} 0 0" rpy="0 0 0"/>
       <limit 
-        lower ="-${pi*2}" 
-        upper="${pi*2}" 
+        lower ="${-0.5 * pi *(reflectx+1) + 0.25 * pi * (reflectx-1)}" 
+        upper="${0.25 * pi *(reflectx+1) - 0.5 * pi * (reflectx-1)}" 
         effort="1000" 
         velocity="6.0" 
       />
@@ -225,18 +250,17 @@
 
     <link name="${prefix}_${suffix}_lowerleg">
       <visual>
-        <origin xyz="0 0 0" rpy="0 0 0" />
+        <origin xyz="0 0 0" rpy="${-0.5 * pi} 0 0" />
         <geometry>
-          <mesh scale="0.001 0.001 0.001" filename="package://dogbot_description/meshes/leg_lower_CF.stl"/>
+          <mesh scale="1.0 1.0 1.0" filename="package://dogbot_description/meshes/LegLower_nofoot.dae"/>
         </geometry>
-        <material name="white"/>
       </visual>      
 
       <xacro:if value="${collisionmesh}">
       <collision>
-        <origin xyz="0 0 0" rpy="0 0 0" />
+        <origin xyz="0 0 0" rpy="${-0.5 * pi} 0 0" />
         <geometry>
-          <mesh scale="0.001 0.001 0.001" filename="package://dogbot_description/meshes/leg_lower_CF.stl"/>
+          <mesh scale="1.0 1.0 1.0" filename="package://dogbot_description/meshes/LegLower_nofoot.dae"/>
         </geometry>
       </collision>   
       </xacro:if>
@@ -259,7 +283,6 @@
       <kp value="${kp}" />
       <kd value="${kd}" />
       <selfCollide value="true" />
-      <material>Gazebo/Grey</material>
     </gazebo>
     
     <joint name="${prefix}_${suffix}_knee_joint" type="revolute">
@@ -276,17 +299,17 @@
 
     <link name="${prefix}_${suffix}_foot">
       <visual>
-        <origin xyz="0 0 0" rpy="0 0 0" />
+        <origin xyz="0 0 0" rpy="${-0.5 * pi} 0 0" />
         <geometry>
-          <mesh scale="0.001 0.001 0.001" filename="package://dogbot_description/meshes/leg_lower_FOOT.stl"/>
+          <mesh scale="1.0 1.0 1.0" filename="package://dogbot_description/meshes/foot.dae"/>
         </geometry>
       </visual> 
       
       <xacro:if value="${collisionmesh}">
       <collision>
-        <origin xyz="0 0 0" rpy="0 0 0" />
+        <origin xyz="0 0 0" rpy="${-0.5 * pi} 0 0" />
         <geometry>
-          <mesh scale="0.001 0.001 0.001" filename="package://dogbot_description/meshes/leg_lower_FOOT.stl"/>
+          <mesh scale="1.0 1.0 1.0" filename="package://dogbot_description/meshes/foot.dae"/>
         </geometry>
       </collision>
       </xacro:if>
@@ -314,7 +337,6 @@
       <mu2 value="1000.0"/>
       <kp value="${kp}" />
       <kd value="${kd}" />
-      <material>Gazebo/Red</material>
     </gazebo>
 
     <transmission name="${prefix}_${suffix}_roll_transmition" >
