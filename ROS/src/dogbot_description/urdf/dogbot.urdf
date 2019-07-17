@@ -4,10 +4,16 @@
 <!-- |    EDITING THIS FILE BY HAND IS NOT RECOMMENDED                                 | -->
 <!-- =================================================================================== -->
 <robot name="dogbot" xmlns:xacro="http://ros.org/wiki/xacro">
-  <!-- =================================================================================== -->
-  <!-- |    Details of mass and inertia in this file are estimates only                  | -->
-  <!-- |    as DogBot design is still undergoing refinements                             | -->
-  <!-- =================================================================================== -->
+  <!-- ===================================================================================
+     |    DogBot v4 URDF                                                               |
+     |    2019 React Robotics Ltd
+     |
+     |    Licence: CC-BY, https://creativecommons.org/licenses/by/4.0/legalcode
+     |    Author:  Nic Greenway, nic@reactrobotics.com
+     |
+     |    Note: details of mass and inertia in this file are estimates only
+     |    as DogBot design is still undergoing refinements                             |
+     =================================================================================== -->
   <material name="blue">
     <color rgba="0 0 0.8 1"/>
   </material>

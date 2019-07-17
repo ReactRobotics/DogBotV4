@@ -81,3 +81,7 @@ gz sdf -p dogbot.urdf  > dogbot.sdf
 [ROS]: http://www.ros.org
 [Catkin]: https://catkin-tools.readthedocs.io/en/latest/index.html
 
+# Licence
+
+The DogBot URDF is published under [Creative Commons-Attribution (CC-BY)](https://creativecommons.org/licenses/by/4.0/)
+

@@ -1,17 +1,19 @@
 <?xml version="1.0"?>
 <package>
   <name>dogbot_description</name>
-  <version>0.0.3</version>
+  <version>0.0.4</version>
   <description>
-        URDF description for ReactAI's DogBot v3
+        URDF description for ReactAI's DogBot v4
   </description>
 
-  <maintainer email="craftit@gmail.com">Charles Galambos</maintainer>
+  <maintainer email="nic@reactrobotics.com">Nic Greenway</maintainer>
 
-  <!-- One license tag required, multiple allowed, one license per tag -->
-  <!-- Commonly used license strings: -->
-  <!--   BSD, MIT, Boost Software License, GPLv2, GPLv3, LGPLv2.1, LGPLv3 -->
-  <license>TODO</license>
+  <license>CC-BY</license>
+
+  <url type="website">https://www.reactrobotics.com</url>
+  <url type="repository">https://github.com/ReactRobotics/DogBotV4</url>
+
+  <author email="nic@reactrobotics.com">Nic Greenway</author>
 
   <!-- Url tags are optional, but multiple are allowed, one per tag -->
   <!-- Optional attribute type can be: website, bugtracker, or repository -->

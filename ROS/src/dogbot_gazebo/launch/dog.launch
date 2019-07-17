@@ -1,6 +1,10 @@
 <?xml version="1.0"?>
 
-<!-- single dogbot in gazebo -->  
+<!-- dog.launch -->  
+<!-- 2019 React Robotics Ltd -->  
+<!-- Nic Greenway, nic@reactrobotics.com -->  
+
+<!-- single dogbot in gazebo with controllers.  Intended to be called from other launch files -->  
 
 <launch>
   <arg name="postgres_log" default="false" />

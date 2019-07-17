@@ -4,7 +4,7 @@ This repository is for the latest generation of the [React Robotics] DogBot quad
 
 # DogBot URDF Description
 
-One item ready for use is the Universal Robot Description File, [URDF], further details are in the ROS directory [readme file](./ROS)
+One item ready for use is the Universal Robot Description File, [URDF], further details are in the ROS directory [readme file](./ROS), including ROS packages to view in Gazebo and RViz.
 
 # Contributing
 
@@ -12,7 +12,9 @@ If you wish to contribute please fork the project on GitHub. More details to fol
 
 # License
 
-Details to follow
+URDF is published under [Creative Commons-Attribution (CC-BY)](https://creativecommons.org/licenses/by/4.0/). 
+
+More details to follow
 
 
 [DogBot v2]: https://github.com/craftit/DogBotSoftware

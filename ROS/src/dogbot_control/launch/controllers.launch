@@ -1,6 +1,10 @@
 <?xml version="1.0"?>
 
-<!-- default controller set, i.e. effort-based position controllers -->  
+<!-- controllers.launch -->  
+<!-- 2019 React Robotics Ltd -->  
+<!-- Nic Greenway, nic@reactrobotics.com -->  
+
+<!-- default DogBot controller set, i.e. effort-based position controllers -->  
 <!-- include this from a wrapper config which sets the namespace -->
 
 <launch>

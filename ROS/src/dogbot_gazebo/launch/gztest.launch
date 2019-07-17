@@ -1,6 +1,13 @@
 <?xml version="1.0"?>
 
-<!-- top-level Gazebo launch file for dogbot simulation -->  
+<!-- gztest.launch -->  
+<!-- 2019 React Robotics Ltd -->  
+<!-- Nic Greenway, nic@reactrobotics.com -->  
+
+<!-- top-level Gazebo launch file for dogbot simulation.
+     usage example, with physics paused:
+     roslaunch dogbot_gazebo gztest.launch paused:=true
+-->  
 
 <launch>
 

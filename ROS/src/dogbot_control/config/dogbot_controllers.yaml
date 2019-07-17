@@ -1,3 +1,7 @@
+# DogBot controllers
+# 2019 React Robotics Ltd
+# Nic Greenway, nic@reactrobotics.com
+
 # ros_control_boilerplate Settings -----------------------
 # Settings for ros_control control loop
 dogbot_hw_control_loop:

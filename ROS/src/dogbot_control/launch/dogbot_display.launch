@@ -1,5 +1,12 @@
 <?xml version="1.0"?>
-<!-- view robot in rviz -->
+<!-- dogbot.display.launch -->  
+<!-- 2019 React Robotics Ltd -->  
+<!-- Nic Greenway, nic@reactrobotics.com -->  
+
+<!-- View DogBot URDF model in RViz.
+     usage example:
+     roslaunch dogbot_control dogbot_display.launch
+-->  
 
 <launch>
 

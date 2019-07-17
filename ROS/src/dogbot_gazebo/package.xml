@@ -3,15 +3,17 @@
   <name>dogbot_gazebo</name>
   <version>0.1.0</version>
   <description>
-        URDF description for ReactAI's DogBot
+        Display and control of React Robotics' DogBot in Gazebo
   </description>
 
   <maintainer email="craftit@gmail.com">Charles Galambos</maintainer>
 
-  <!-- One license tag required, multiple allowed, one license per tag -->
-  <!-- Commonly used license strings: -->
-  <!--   BSD, MIT, Boost Software License, GPLv2, GPLv3, LGPLv2.1, LGPLv3 -->
-  <license>TODO</license>
+  <license>BSD</license>
+
+  <url type="website">https://www.reactrobotics.com</url>
+  <url type="repository">https://github.com/ReactRobotics/DogBotV4</url>
+
+  <author email="craftit@gmail.com">Charles Galambos</author>
   
   <buildtool_depend>catkin</buildtool_depend>
   <run_depend>urdf</run_depend>
