@@ -19,7 +19,7 @@ To view the DogBot sim in an empty Gazebo world, starting with physics paused:
 ```bat
 roslaunch dogbot_gazebo gztest.launch paused:=true
 ```
-![Gazebo DogBot screenshot](Library/dogbot.gazebo.png "DogBot model in empty Gazebo sim world")
+![Gazebo DogBot screenshot](../Library/dogbot.gazebo.png "DogBot model in empty Gazebo sim world")
 
 ## View in RViz
 
@@ -28,7 +28,7 @@ To view the DogBot sim in RViz:
 ```bat
 roslaunch dogbot_control dogbot_display.launch
 ```
-![RViz DogBot screenshot](Library/dogbot.rviz.png "DogBot model in ROS RViz")
+![RViz DogBot screenshot](../Library/dogbot.rviz.png "DogBot model in ROS RViz")
 
 ## Operation and Controllers
 
@@ -60,10 +60,10 @@ Set a joint position: `rostopic pub /dogbot/back_left_knee_position_controller/c
 
 # URDF Standalone
 
-The urdf and meshes to use outside of a ROS/Gazebo environment are under [dogbot_description](src/dogbot_description).  Note that the [dogbot.urdf](src/dogbot_description/dogbot.urdf) file defines the location of the meshes via their ROS package locations.
+The urdf and meshes to use outside of ROS or Gazebo are all under [dogbot_description](src/dogbot_description).  Note that the [dogbot.urdf](src/dogbot_description/urdf/dogbot.urdf) file defines the location of the meshes via their package locations.
 
 URDF rendered in a DART simulation:
-![DART DogBot screenshot](Library/dogbot.dart.png "DogBot model in DART simulation")
+![DART DogBot screenshot](../Library/dogbot.dart.png "DogBot model in DART simulation")
 
 ## Export URDF/SDF from Xacro
 
@@ -73,7 +73,7 @@ The xacro file can be transformed to URDF or SDF using the following (note, [ROS
 ```bat
 cd src/dogbot_description/urdf
 rosrun xacro xacro -o dogbot.urdf  dogbot.xacro
-gz sdf -p test.urdf  > test.sdf
+gz sdf -p dogbot.urdf  > dogbot.sdf
 ```
 
 [URDF]: http://wiki.ros.org/urdf
