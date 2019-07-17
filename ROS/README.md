@@ -2,7 +2,7 @@
 
 DogBot comes integrated with ROS for ease of integration with your own systems.  Refer to the main repo instructions for initial setup.
 
-Currently only the [URDF] and a simple Gazebo world are available for Dogbot v4.
+Currently the [URDF] and a simple Gazebo world are available for Dogbot v4.
 
 # ROS/Gazebo operation
 
@@ -54,7 +54,7 @@ velocity: [-0.00010527474898890457, -0.05999126541337438, 0.023494453417636632, 
 effort: [-1.9987473232990993, -3.9632086186793813, 0.2159600645524229, 1.7079086119966114, 4.153585637851531, 0.2098364155584953, -1.9894945655073215, -3.969541821735767, -0.16152798434854176, 1.995826089237962, 4.006421853246422, -0.15152127120776626]
 ```
 
-Show just back_left_pitch_joint position: `rostopic echo -n 1 /dogbot/joint_states/position[2]`
+Show just back_left_roll_joint position: `rostopic echo -n 1 /dogbot/joint_states/position[2]`
 
 Set a joint position: `rostopic pub /dogbot/back_left_knee_position_controller/command std_msgs/Float64 "data: -1.0" -1`
 
