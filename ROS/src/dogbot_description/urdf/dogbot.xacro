@@ -7,8 +7,10 @@
      |    Licence: CC-BY, https://creativecommons.org/licenses/by/4.0/legalcode
      |    Author:  Nic Greenway, nic@reactrobotics.com
      |
-     |    Note: details of mass and inertia in this file are estimates only
-     |    as DogBot design is still undergoing refinements                             |
+     |    Note: some details of mass and inertia in this file are estimates, 
+     |    as DogBot design is still undergoing refinements, and values will vary
+     |    with individual DogBot specification (e.g. battery configuration, on-board
+     |    processor, etc.)
      =================================================================================== -->
   
   <xacro:property name="collisionmesh" value="false" />
@@ -137,7 +139,7 @@
       <xacro:offset_cylinderpair l="0.080" y="-0.3975" />
     </xacro:unless>
         
-    <xacro:default_inertial mass="9.836" xSize="${bodywidth}" ySize="${bodylen}" zSize="${bodyheight}" ifactor="1.5" />
+    <xacro:custom_inertial mass="9.3" ixx="0.41" iyy="0.091" izz="0.482"/>
         
   </link>
 
@@ -193,7 +195,8 @@
       <xacro:unless value="${collisionmesh}">      
         <xacro:offset_cylinder l="0.08" p="${pi/2}" x="${0.02 * reflectx}"/>
       </xacro:unless>
-      <xacro:default_inertial mass="0.852" xSize="${bodyheight}" ySize="0.08" zSize="${bodyheight}" z="0.007" ifactor="1.2"/>
+      <xacro:custom_inertial mass="0.836" x="${0.0074 * reflectx}" ixx="0.00213" iyy="0.00147" izz="0.00172"/>
+      
     </link>    
 
     <!-- roll joint connects the hip to the body -->
@@ -205,7 +208,7 @@
       <limit 
          lower ="${-100 * d2rad}" 
          upper ="${100 * d2rad}" 
-         effort="500" velocity="6.0" />
+         effort="60" velocity="6.0" />
     </joint>
   
     <link name="${prefix}_${suffix}_upperleg">
@@ -237,7 +240,7 @@
         <xacro:offset_cylinder l="0.013" rad="0.017" z="${-upperleglen}" p="${pi/2}" x="${-0.036 * reflectx}" />
       </xacro:unless>      
       
-      <xacro:default_inertial mass="2.791" xSize="0.08" ySize="0.03" zSize="0.38" ifactor="1.3" x="0.0129" z="-0.0785" />
+      <xacro:custom_inertial mass="1.851" x="${0.0418 * reflectx}" z="-0.0517" ixx="0.0238" iyy="0.0252" izz="0.0044"/>
     </link>    
     
     <!-- pitch joint connects hip to upper leg -->
@@ -249,7 +252,7 @@
       <limit 
         lower ="${-0.5 * pi *(reflectx+1) + 0.25 * pi * (reflectx-1)}" 
         upper="${0.25 * pi *(reflectx+1) - 0.5 * pi * (reflectx-1)}" 
-        effort="1000" 
+        effort="60" 
         velocity="6.0" 
       />
     </joint>
@@ -280,7 +283,7 @@
         <xacro:offset_cylinder l="0.290" rad="0.006" p="-0.04996" x="-0.01575" y="-0.0375" z="-0.145" />
       </xacro:unless>
 
-      <xacro:default_inertial mass="0.45" xSize="0.03" ySize="0.02" zSize="0.36" y="-0.02" z="-0.03" ifactor="1.7" />
+      <xacro:custom_inertial mass="0.302" y="-0.029" z="-0.1439" ixx="0.00527" iyy="0.00509" izz="0.0008"/>
     </link>    
 
     <gazebo reference="${prefix}_${suffix}_lowerleg">
@@ -299,7 +302,7 @@
       <limit 
          lower ="${-0.01*(reflectx+1) + 150 * d2rad * (reflectx-1)/2}" 
          upper ="${-0.01*(reflectx-1) + 150 * d2rad * (reflectx+1)/2}" 
-         effort="1000" velocity="6.0" 
+         effort="60" velocity="6.0" 
        />
     </joint>
 
@@ -327,8 +330,8 @@
           </geometry>
         </collision>
       </xacro:unless>
-      
-      <xacro:default_inertial mass="0.2" xSize="0.05" ySize="0.05" zSize="0.05" y="-0.035" z="${-lowerleglen}"/>
+      <!-- foot mass is included in lower leg link -->
+      <xacro:tinymass />
     </link> 
 
     <joint name="${prefix}_${suffix}_foot_joint" type="fixed">

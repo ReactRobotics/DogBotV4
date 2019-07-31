@@ -1,6 +1,6 @@
 # Dogbot ROS Components
 
-DogBot comes integrated with ROS for ease of integration with your own systems.  Refer to the main repo instructions for initial setup.
+DogBot comes integrated with [ROS] for ease of integration with your own systems.  Refer to the main repo [instructions](../README.md) for initial setup.
 
 Currently the [URDF] and a simple Gazebo world are available for Dogbot v4.
 
@@ -12,6 +12,8 @@ There is a standard [Catkin] workspace in the ROS folder, which should be built 
 catkin build
 source devel/setup.bash
 ```
+
+It is assumed that you have ROS and Catkin installed; ROS install instructions are [here](http://wiki.ros.org/melodic/Installation).
 
 ## View Gazebo Simulation
 
@@ -60,28 +62,29 @@ Set a joint position: `rostopic pub /dogbot/back_left_knee_position_controller/c
 
 # URDF Standalone
 
-The urdf and meshes to use outside of ROS or Gazebo are all under [dogbot_description](src/dogbot_description).  Note that the [dogbot.urdf](src/dogbot_description/urdf/dogbot.urdf) file defines the location of the meshes via their package locations.
+The urdf and meshes to use outside of ROS or Gazebo are all under [dogbot_description](src/dogbot_description).  You should be able to use the URDF without building and sourcing the Catkin workspace, but note that the [dogbot.urdf](src/dogbot_description/urdf/dogbot.urdf) file defines the location of the meshes via the dogbot_description package location.
+
+**Note:** Some of the values in the URDF are estimates, as the design is still undergoing refinements.  Overall weight will also vary according to individual DogBot specification (e.g. on-board compute resources, battery configuration).
 
 URDF rendered in a DART simulation:
+
 ![DART DogBot screenshot](../Library/dogbot.dart.png "DogBot model in DART simulation")
 
 ## Export URDF/SDF from Xacro
 
-The xacro file is the golden source of DogBot's URDF definition, so if you wish to contribute please make your edits there.
-
-The xacro file can be transformed to URDF or SDF using the following (note, [ROS] is required for this step):
+The xacro file is the golden source of DogBot's URDF definition.  The xacro file can be transformed to URDF or SDF using the following (note, [ROS] is required for this step):
 ```bat
 cd src/dogbot_description/urdf
 rosrun xacro xacro -o dogbot.urdf  dogbot.xacro
 gz sdf -p dogbot.urdf  > dogbot.sdf
 ```
 
-[URDF]: http://wiki.ros.org/urdf
-[boilerplate]: https://github.com/davetcoleman/ros_control_boilerplate
-[ROS]: http://www.ros.org
-[Catkin]: https://catkin-tools.readthedocs.io/en/latest/index.html
-
 # Licence
 
 The DogBot URDF is published under [Creative Commons-Attribution (CC-BY)](https://creativecommons.org/licenses/by/4.0/)
 
+
+[URDF]: http://wiki.ros.org/urdf
+[boilerplate]: https://github.com/davetcoleman/ros_control_boilerplate
+[ROS]: http://www.ros.org
+[Catkin]: https://catkin-tools.readthedocs.io/en/latest/index.html
