@@ -20,7 +20,7 @@
   <xacro:property name="bodylen" value="0.865" />
   
   <xacro:property name="hipoffsetside" value="0.088" /><!-- offset from body centreline to hip roll -->
-  <xacro:property name="hipoffset" value="0.2795" /><!-- offset from body midpoint front/back to hip -->
+  <xacro:property name="hipoffset" value="0.2875" /><!-- offset from body midpoint front/back to hip, axis-to-axis is 575mm -->
   <xacro:property name="legoffsetside" value="0.18675" /><!-- from centreline to centre/origin of upper leg -->  
   <xacro:property name="upperleglen" value="0.315" />
   <xacro:property name="lowerleglen" value="0.3" />
@@ -295,7 +295,7 @@
     </gazebo>
     
     <joint name="${prefix}_${suffix}_knee_joint" type="revolute">
-      <axis xyz="${reflectx} 0 0" rpy="${-2*pi} 0 0" />
+      <axis xyz="${-1 * reflectx} 0 0" rpy="${-2*pi} 0 0" />
       <parent link="${prefix}_${suffix}_upperleg"/>
       <child link="${prefix}_${suffix}_lowerleg"/>
       <origin xyz="0 0 ${-upperleglen}" rpy="0 0 0"/>

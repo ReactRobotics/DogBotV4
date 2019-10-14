@@ -79,12 +79,12 @@ rosrun xacro xacro -o dogbot.urdf  dogbot.xacro
 gz sdf -p dogbot.urdf  > dogbot.sdf
 ```
 
-# Licence
-
-The DogBot URDF is published under [Creative Commons-Attribution (CC-BY)](https://creativecommons.org/licenses/by/4.0/)
-
-
 [URDF]: http://wiki.ros.org/urdf
 [boilerplate]: https://github.com/davetcoleman/ros_control_boilerplate
 [ROS]: http://www.ros.org
 [Catkin]: https://catkin-tools.readthedocs.io/en/latest/index.html
+
+# Licence
+
+The DogBot URDF is published under [Creative Commons-Attribution (CC-BY)](https://creativecommons.org/licenses/by/4.0/)
+

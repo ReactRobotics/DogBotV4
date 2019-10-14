@@ -165,7 +165,7 @@
     <axis rpy="0 0 0" xyz="0 -1 0"/>
     <parent link="body"/>
     <child link="back_left_hip"/>
-    <origin rpy="0 0 0" xyz="-0.088 -0.2795 0"/>
+    <origin rpy="0 0 0" xyz="-0.088 -0.2875 0"/>
     <limit effort="60" lower="-1.7453" upper="1.7453" velocity="6.0"/>
   </joint>
   <link name="back_left_upperleg">
@@ -276,7 +276,7 @@
     <selfCollide value="true"/>
   </gazebo>
   <joint name="back_left_knee_joint" type="revolute">
-    <axis rpy="-6.28318530718 0 0" xyz="-1 0 0"/>
+    <axis rpy="-6.28318530718 0 0" xyz="1 0 0"/>
     <parent link="back_left_upperleg"/>
     <child link="back_left_lowerleg"/>
     <origin rpy="0 0 0" xyz="0 0 -0.315"/>
@@ -367,7 +367,7 @@
     <axis rpy="0 0 0" xyz="0 -1 0"/>
     <parent link="body"/>
     <child link="back_right_hip"/>
-    <origin rpy="0 0 0" xyz="0.088 -0.2795 0"/>
+    <origin rpy="0 0 0" xyz="0.088 -0.2875 0"/>
     <limit effort="60" lower="-1.7453" upper="1.7453" velocity="6.0"/>
   </joint>
   <link name="back_right_upperleg">
@@ -478,7 +478,7 @@
     <selfCollide value="true"/>
   </gazebo>
   <joint name="back_right_knee_joint" type="revolute">
-    <axis rpy="-6.28318530718 0 0" xyz="1 0 0"/>
+    <axis rpy="-6.28318530718 0 0" xyz="-1 0 0"/>
     <parent link="back_right_upperleg"/>
     <child link="back_right_lowerleg"/>
     <origin rpy="0 0 0" xyz="0 0 -0.315"/>
@@ -569,7 +569,7 @@
     <axis rpy="0 0 0" xyz="0 1 0"/>
     <parent link="body"/>
     <child link="front_left_hip"/>
-    <origin rpy="0 0 0" xyz="-0.088 0.2795 0"/>
+    <origin rpy="0 0 0" xyz="-0.088 0.2875 0"/>
     <limit effort="60" lower="-1.7453" upper="1.7453" velocity="6.0"/>
   </joint>
   <link name="front_left_upperleg">
@@ -680,7 +680,7 @@
     <selfCollide value="true"/>
   </gazebo>
   <joint name="front_left_knee_joint" type="revolute">
-    <axis rpy="-6.28318530718 0 0" xyz="-1 0 0"/>
+    <axis rpy="-6.28318530718 0 0" xyz="1 0 0"/>
     <parent link="front_left_upperleg"/>
     <child link="front_left_lowerleg"/>
     <origin rpy="0 0 0" xyz="0 0 -0.315"/>
@@ -771,7 +771,7 @@
     <axis rpy="0 0 0" xyz="0 1 0"/>
     <parent link="body"/>
     <child link="front_right_hip"/>
-    <origin rpy="0 0 0" xyz="0.088 0.2795 0"/>
+    <origin rpy="0 0 0" xyz="0.088 0.2875 0"/>
     <limit effort="60" lower="-1.7453" upper="1.7453" velocity="6.0"/>
   </joint>
   <link name="front_right_upperleg">
@@ -882,7 +882,7 @@
     <selfCollide value="true"/>
   </gazebo>
   <joint name="front_right_knee_joint" type="revolute">
-    <axis rpy="-6.28318530718 0 0" xyz="1 0 0"/>
+    <axis rpy="-6.28318530718 0 0" xyz="-1 0 0"/>
     <parent link="front_right_upperleg"/>
     <child link="front_right_lowerleg"/>
     <origin rpy="0 0 0" xyz="0 0 -0.315"/>
